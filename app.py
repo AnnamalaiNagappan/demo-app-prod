@@ -1,40 +1,27 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
+from werkzeug import secure_filename
+from collections import Counter
 
 app = Flask(__name__)
 
 @app.route('/')
 def homepage():
-
-    title = "Epic Tutorials"
-    paragraph = ["wow I am learning so much great stuff!wow I am learning so much great stuff!wow I am learning so much great stuff!wow I am learning so much great stuff!","wow I am learning so much great stuff!wow I am learning so much great stuff!wow I am learning so much great stuff!wow I am learning so much great stuff!wow I am learning so much great stuff!wow I am learning so much great stuff!wow I am learning so much great stuff!wow I am learning so much great stuff!wow I am learning so much great stuff!"]
-
-    # try:
-    return render_template("index.html", title = title, paragraph=paragraph)
-    # except Exception, e:
-    #     return str(e)
-
-@app.route('/about')
-def aboutpage():
-
-    title = "About this site"
-    paragraph = ["blah blah blah memememememmeme blah blah memememe"]
-
-    pageType = 'about'
-
-    return render_template("index.html", title=title, paragraph=paragraph, pageType=pageType)
+    return render_template("index.html")
 
 
-@app.route('/about/contact')
-def contactPage():
-
-    title = "About this site"
-    paragraph = ["blah blah blah memememememmeme blah blah memememe"]
-
-    pageType = 'about'
-
-    return render_template("index.html", title=title, paragraph=paragraph, pageType=pageType)
-
-
+@app.route('/uploader', methods = ['GET', 'POST'])
+def upload_file():
+   if request.method == 'POST':
+      f = request.files['file']
+      data = open(f.filename)
+      word_collector = []
+      for word in data.read().split():
+          word_collector.append(word)
+      freq_items = Counter(word_collector)
+      freq_items = freq_items.most_common()
+      f.save(secure_filename(f.filename))
+      return render_template("display.html", freq_items=freq_items)
 
 if __name__ == "__main__":
-    app.run(debug = True, host='0.0.0.0', port=8080, passthrough_errors=True)
+    app.run(debug = True, port=8080, passthrough_errors=True)
+    app.config['TEMPLATES_AUTO_RELOAD'] = True
