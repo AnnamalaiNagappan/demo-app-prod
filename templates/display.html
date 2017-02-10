@@ -1,0 +1,24 @@
+<link rel="stylesheet" media="screen" href = "{{ url_for('static', filename='bootstrap.min.css') }}">
+
+<div class="container">
+  <div class="col-xs-4"> </div>
+  <div class="col-xs-4" style="height: 600px; overflow-y: scroll;">
+    <table class="table">
+      <thead>
+        {% for theading in ['Word', 'Frequency'] %}
+          <th> {{theading}} </th>
+        {% endfor %}
+      </thead>
+      <tbody>
+        {% for item in freq_items %}
+        <tr>
+          {% for tval in [item[0], item[1]] %}
+            <td> {{tval}} </td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="col-xs-4"> </div>
+</div>
